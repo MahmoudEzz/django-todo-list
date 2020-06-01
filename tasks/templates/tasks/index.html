@@ -4,14 +4,80 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
-    <title>Hello, world!</title>
+    <title>Todo List</title>
+    <style>
+        .done{
+        color: orange;
+        font-size: 18px;
+        text-decoration: line-through;
+        text-decoration-style: 'solid';
+        }
+        .notYet{
+        color: orange;
+        font-size: 18px;
+        }
+        .w{
+            width: 93px;
+        }
+        .main{
+            background-color: #eeeeee;
+            padding: 15px;
+            border: 1px solid #888888;
+            border-radius: 3px;
+        }
+    </style>
   </head>
   <body>
-    <h1>Hello, world!</h1>
+    <div class="mt-5 d-flex justify-content-center">
+        <div class="col-3 main">
+            <h4> <strong> Todo</strong> list</h4>
+            <div class="row">
+                <form class="form-inline" method="POST" action="{% url 'add' %}">
+                    {% csrf_token %}
+                    <div class="form-group mx-sm-3 mb-2">
+                        {{form.text}}
+                    </div>
+                    <button type="submit" class="btn btn-primary mb-2">Add</button>
+                </form>
+            </div>
+            <div>
+                <a class="btn btn-outline-success w" href="{% url 'done' %}" role="button">Done</a>
+                <a class="btn btn-outline-warning w" href="{% url 'active' %}" role="button">Active</a>
+                <a class="btn btn-outline-primary w" href="{% url 'index' %}" role="button">All</a>
+            </div>
+    
+            <div class="mt-2 mb-2">
+                <div class="card" style="width: 18rem;">
+                    <div class="card-header">
+                      List
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        {% if not tasks%}
+                            <div class="list-group-item">
+                                <p class="card-text">Empty</p>
+                            </div>
+                        {% endif %}
+                        {% for task in tasks %}
+                            {% if task.done %}
+                            <div class="list-group-item">
+                                <p class="card-text done">{{task}}</p>
+                                <a class="btn btn-outline-danger x" href="{% url 'deleteOne' task.id %}" role="button" style="float: right; margin-top: -45px;">x</a>
+                            </div>
+                            {% else %}
+                                <div class="list-group-item">
+                                    <a href="{% url 'check' task.id %}"><p class="card-text notYet">{{task}}</p></a>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+    
+            <a class="btn btn-outline-danger" href="{% url 'deleteAll' %}" role="button">Delete All</a>
+        </div>
+    </div>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
